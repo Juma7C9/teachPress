@@ -334,7 +334,7 @@ class TP_Publication_Sources_Page {
      * @return new_signature, nb_updates, status_message, success
      * @since 9.0.0
      */
-    public static function update_source_http($url, $previous_sig, &$this_req) {
+    public static function update_source_http($url, $previous_sig, &$this_req, $my_string = '') {
         $new_signature = '';
         $nb_updates = 0;
         $status_message = 'Unknown error.';
@@ -365,6 +365,7 @@ class TP_Publication_Sources_Page {
                                 'author_format'     => 'dynamic',
                                 'overwrite'         => true,
                                 'ignore_tags'       => false,
+                                'my_string'         => $my_string,
                             );
 
                             $entries = TP_Bibtex_Import::init($body, $settings);
@@ -483,12 +484,27 @@ class TP_Publication_Sources_Page {
         // what is the protocol?
         $url_parts = explode("://", strtolower(trim($url)));
         $result = false;
+        $my_string = '';
         if (count($url_parts) > 1) {
-            switch ($url_parts[0]) {
+            $url_parts_2 = explode('+', $url_parts[0]);
+            switch (count($url_parts_2)) {
+		case 1:
+		    $proto = $url_parts[0];
+                    break;
+                case 2:
+                    $my_string = $url_parts_2[0];
+                    $proto = $url_parts_2[1];
+                    $url = $proto . '://' . $url_parts[1];
+                    break;
+                default:
+                    $proto = '';
+                    break;
+            }
+            switch ($proto) {
                 case "http":
                 case "https":
                     $http_req = NULL;
-                    $result = TP_Publication_Sources_Page::update_source_http($url, $previous_sig, $http_req);
+                    $result = TP_Publication_Sources_Page::update_source_http($url, $previous_sig, $http_req, $my_string);
                     break;
                 case "zotero":
                     $result = TP_Publication_Sources_Page::update_source_zotero($url, $previous_sig);

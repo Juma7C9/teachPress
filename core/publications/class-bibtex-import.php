@@ -135,6 +135,11 @@ class TP_Bibtex_Import {
                 $tags = str_replace (array("\r\n", "\n", "\r"), ' ', $tags);
             }
             
+            // Custom string
+            if ( $settings['my_string'] != '' ) {
+                $entries[$i]['key'] = $settings['my_string'];
+            }
+
             // Add the string to database
             if ( $test === false ) {
                 $entries[$i]['entry_id'] = self::import_publication_to_database($entries[$i], $tags, $settings);
