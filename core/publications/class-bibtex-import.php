@@ -22,9 +22,13 @@ class TP_Bibtex_Import {
     * @since 3.0.0
     */
     public static function init ($input, $settings, $test = false) {
-        
+
         // Try to set the time limit for the script
         set_time_limit(TEACHPRESS_TIME_LIMIT);
+
+        // List meta fields
+        global $wpdb;
+        $meta_fields = $wpdb->get_results("SELECT variable FROM " . TEACHPRESS_SETTINGS . " WHERE category = 'teachpress_pub'", ARRAY_A);
         
         // create import info
         $import_id = ( $test === false ) ? tp_publication_imports::add_import() : 0;
@@ -135,9 +139,20 @@ class TP_Bibtex_Import {
                 $tags = str_replace (array("\r\n", "\n", "\r"), ' ', $tags);
             }
             
-            // Custom string
-            if ( $settings['my_string'] != '' ) {
-                $entries[$i]['key'] = $settings['my_string'];
+            // Fill meta fields
+            $entries[$i]['meta_fields'] = array();
+            $meta_array = $settings['meta_array'];
+            if ( !empty($meta_fields) ) {
+                foreach ( $meta_fields as $field ) {
+                    $key = $field['variable'];
+                    if ( array_key_exists( $key, $entries[$i] ) ) {
+                        $entries[$i]['meta_fields'][$key] = $entries[$i][$key];
+                    }
+                    // Overwrite with custom field, if exists
+                    if ( array_key_exists( $key, $meta_array ) ) {
+                        $entries[$i]['meta_fields'][$key] = $meta_array[$key];
+                    }
+                }
             }
 
             // Add the string to database

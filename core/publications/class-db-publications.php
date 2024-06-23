@@ -457,6 +457,11 @@ class TP_Publications {
         // Editors
         TP_Publications::add_relation($pub_id, $data['editor'], ' and ', 'editors');
         
+        // Meta fields
+        foreach ( $data['meta_fields'] as $meta_key => $meta_value ) {
+            TP_Publications::add_pub_meta($pub_id, $meta_key, $meta_value);
+        }
+
         return $pub_id;
     }
     
@@ -591,6 +596,14 @@ class TP_Publications {
         }
         if ( $data['editor'] != '' ) {
             TP_Publications::add_relation($pub_id, $data['editor'], ' and ', 'editors');
+        }
+        
+        // Change pub_meta
+        if ( !empty($data['meta_fields']) ) {
+            TP_Publications::delete_pub_meta($pub_id);
+            foreach ( $data['meta_fields'] as $meta_key => $meta_value) {
+                TP_Publications::add_pub_meta($pub_id, $meta_key, $meta_value);
+            }
         }
     }
     

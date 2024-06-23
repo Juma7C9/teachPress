@@ -334,7 +334,7 @@ class TP_Publication_Sources_Page {
      * @return new_signature, nb_updates, status_message, success
      * @since 9.0.0
      */
-    public static function update_source_http($url, $previous_sig, &$this_req, $my_string = '') {
+    public static function update_source_http($url, $previous_sig, &$this_req, $meta_array = array() ) {
         $new_signature = '';
         $nb_updates = 0;
         $status_message = 'Unknown error.';
@@ -365,7 +365,7 @@ class TP_Publication_Sources_Page {
                                 'author_format'     => 'dynamic',
                                 'overwrite'         => true,
                                 'ignore_tags'       => false,
-                                'my_string'         => $my_string,
+                                'meta_array'        => $meta_array,
                             );
 
                             $entries = TP_Bibtex_Import::init($body, $settings);
@@ -484,27 +484,26 @@ class TP_Publication_Sources_Page {
         // what is the protocol?
         $url_parts = explode("://", strtolower(trim($url)));
         $result = false;
-        $my_string = '';
+        $meta_array = array();
         if (count($url_parts) > 1) {
-            $url_parts_2 = explode('+', $url_parts[0]);
-            switch (count($url_parts_2)) {
-		case 1:
-		    $proto = $url_parts[0];
-                    break;
-                case 2:
-                    $my_string = $url_parts_2[0];
-                    $proto = $url_parts_2[1];
-                    $url = $proto . '://' . $url_parts[1];
-                    break;
-                default:
-                    $proto = '';
-                    break;
+            // key1=value1+key2=value2+...proto://address
+            $proto_parts = explode('+', $url_parts[0]);
+            $proto = array_pop( $proto_parts );
+            $url = $proto . "://" . $url_parts[1];
+            foreach ( $proto_parts as $kv ) {
+                if ( strpos($kv, '=') ) {
+                    $kv = explode( "=", $kv );
+                    if ( $kv[1] !== '' ) {
+                        $meta_array[ $kv[0] ] = $kv[1];
+                    }
+                }
             }
+
             switch ($proto) {
                 case "http":
                 case "https":
                     $http_req = NULL;
-                    $result = TP_Publication_Sources_Page::update_source_http($url, $previous_sig, $http_req, $my_string);
+                    $result = TP_Publication_Sources_Page::update_source_http($url, $previous_sig, $http_req, $meta_array);
                     break;
                 case "zotero":
                     $result = TP_Publication_Sources_Page::update_source_zotero($url, $previous_sig);
