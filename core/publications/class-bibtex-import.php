@@ -114,7 +114,12 @@ class TP_Bibtex_Import {
             
             // rename to teachPress keys
             $entries[$i]['type'] = $entries[$i]['bibtexEntryType'];
-            $entries[$i]['bibtex'] = $entries[$i]['bibtexCitation'];
+            
+            // normalize bibtex key
+            $bibtex = preg_replace('/[[:space:]]/', '',  $entries[$i]['bibtexCitation']); 
+            // BIBTEXPARSE adds a <lineBreak> tag if the key is on a newline, so remove it
+            $bibtex = str_replace('<LineBreak>', '', $bibtex);
+            $entries[$i]['bibtex'] = $bibtex;
             
             // handle export data from teachPress/biblatex
             if ( $entries[$i]['tppubtype'] != '' ) {

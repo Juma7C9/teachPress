@@ -36,7 +36,7 @@ class TP_Publications {
      */
     public static function get_publication_by_key($key, $output_type = OBJECT) {
         global $wpdb;
-        $key = esc_sql(htmlspecialchars($key));
+        $key = esc_sql($key);
         $result = $wpdb->get_row("SELECT *, DATE_FORMAT(date, '%Y') AS year FROM " . TEACHPRESS_PUB . " WHERE `bibtex` = '$key'", $output_type);
         return $result;
     }
