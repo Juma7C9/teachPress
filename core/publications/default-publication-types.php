@@ -208,7 +208,7 @@ function tp_register_all_publication_types() {
             'i18n_singular'     => __('PhD Thesis','teachpress'),
             'i18n_plural'       => __('PhD Theses','teachpress'), 
             'default_fields'    => array('howpublished'), 
-            'html_meta_row'     => '{school}{year}{isbn}{note}' 
+            'html_meta_row'     => '{school}{date}{isbn}{note}' 
         ) );
     
     // Presentation
