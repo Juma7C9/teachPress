@@ -454,7 +454,7 @@ class TP_Import_Publication_Page {
 
         // Load data
         $wp_id = get_current_user_id();
-        $list = tp_publication_imports::get_imports($wp_id);
+        $list = tp_publication_imports::get_imports();
         $users = get_users();
         $publications_count = tp_publication_imports::count_publications();
 
