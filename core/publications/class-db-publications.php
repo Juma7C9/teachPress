@@ -192,13 +192,16 @@ class TP_Publications {
                 $key = $field['variable'];
                 $column_id = 'm' . $i . '.meta_value'; 
                 if (array_key_exists($key, $meta_key_search) ) {
-                    $nwhere[] = TP_DB_Helpers::generate_where_clause($meta_key_search[$key], $column_id, "OR", "=");
+                    $mwhere[] = TP_DB_Helpers::generate_where_clause($meta_key_search[$key], $column_id, "OR", "=");
                 }
                 $i++;
             }
         }
         
-        $where = TP_DB_Helpers::compose_clause($nwhere);
+        // HACK: Merge meta fields inclusively to use them as an additional author field
+        $where = TP_DB_Helpers::compose_clause( array(
+            TP_DB_Helpers::compose_clause($nwhere, "AND", ''),
+            TP_DB_Helpers::compose_clause($mwhere, "AND", '') ), "OR");
         
         // HAVING clause
         $having = '';
