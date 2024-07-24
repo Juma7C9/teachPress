@@ -2,16 +2,16 @@
 /**
  * Plugin Name:         teachPress
  * Plugin URI:          http://mtrv.wordpress.com/teachpress/
- * Description:         Powerful publication management for WordPress
+ * Description:         Powerful publication management for WordPress (custom version)
  * Author:              Michael Winkler
  * Author URI:          http://mtrv.wordpress.com/
- * Version:             9.0.6
+ * Version:             90.1
  * Requires at least:   3.9
  * Text Domain:         teachpress
  * Domain Path:         /languages
  * License:             GPL v2 or later
  * License URI:         https://www.gnu.org/licenses/gpl-2.0.html
- * GitHub Plugin URI:   https://github.com/winkm89/teachPress
+ * GitHub Plugin URI:   https://github.com/Juma7C9/teachPress
  * GitHub Branch:       master
  */
 
